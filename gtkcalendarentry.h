@@ -1,3 +1,8 @@
+/* ************************************************************************ *
+ * gtkcalendarentry.h - header file for use with GtkCalendarEntry widget    $
+ * $Id::                                                                    $
+ * ************************************************************************ */
+
 #ifndef _CALENDAR_ENTRY_H_
 #define _CALENDAR_ENTRY_H_
 

@@ -1,3 +1,8 @@
+/* ************************************************************************ *
+ * gtkcalendarentry.c - Source to generate GtkCalendarEntry widget          $
+ * $Id::                                                                    $
+ * ************************************************************************ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtksignal.h>
