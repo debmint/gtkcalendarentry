@@ -10,3 +10,4 @@ AM_LDFLAGS = -g -Wall `pkg-config --libs gtk+-2.0 glib-2.0`
 
 lib_LTLIBRARIES	= libgtkcalendarentry.la
 libgtkcalendarentry_la_SOURCES = gtkcalendarentry.c
+include_HEADERS = gtkcalendarentry.h
