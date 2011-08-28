@@ -378,6 +378,7 @@ gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self,
                                             gchar *date)
 {
     gchar **date_ent = g_strsplit (date, "-", 3);
+    gchar **src_val;
     GtkEntry **date_pos;
     guint count;
 
@@ -391,11 +392,15 @@ gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self,
         }
     }
 
-    while (*date_ent)
+    src_val = date_ent;
+
+    while (*src_val)
     {
-        gtk_entry_set_text (*(date_pos++), *date_ent);
-        g_free (*(date_ent++));
+        gtk_entry_set_text (*(date_pos++), *(src_val++));
+//        g_free (*(date_ent++));
     }
+
+    g_strfreev (date_ent);
 }
 
 void
