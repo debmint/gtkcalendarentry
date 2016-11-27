@@ -22,11 +22,16 @@
 G_BEGIN_DECLS
 
 #define GTK_TYPE_CALENDAR_ENTRY             (gtk_calendar_entry_get_type ())
-#define GTK_CALENDAR_ENTRY(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_CALENDAR_ENTRY, GtkCalendarEntry))
-#define GTK_CALENDAR_ENTRY_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_CALENDAR_ENTRY, GtkCalendarEntryClass))
-#define GTK_IS_CALENDAR_ENTRY(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_CALENDAR_ENTRY))
-#define GTK_IS_CALENDAR_ENTRY_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_CALENDAR_ENTRY))
-#define GTK_CALENDAR_ENTRY_GET_CLASS (obj)  (G_TYPEINSTANCE_GET_CLASS ((obj), GTK_TYPE_CALENDAR_ENTRY, Gtk__CalendarEntryClass))
+#define GTK_CALENDAR_ENTRY(obj)         \
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_CALENDAR_ENTRY, GtkCalendarEntry))
+#define GTK_CALENDAR_ENTRY_CLASS(klass)  \
+    (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_CALENDAR_ENTRY, GtkCalendarEntryClass))
+#define GTK_IS_CALENDAR_ENTRY(obj)       \
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_CALENDAR_ENTRY))
+#define GTK_IS_CALENDAR_ENTRY_CLASS(klass) \
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_CALENDAR_ENTRY))
+#define GTK_CALENDAR_ENTRY_GET_CLASS (obj)  \
+    (G_TYPEINSTANCE_GET_CLASS ((obj), GTK_TYPE_CALENDAR_ENTRY, Gtk__CalendarEntryClass))
 
 typedef struct _GtkCalendarEntry       GtkCalendarEntry;
 typedef struct _GtkCalendarEntryClass  GtkCalendarEntryClass;
