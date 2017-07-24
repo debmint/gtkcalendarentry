@@ -1,0 +1,4 @@
+This is a widget to display a calendar as a popup - sort of.  It has a
+GtkEntry in which the date can be entered, but also a button to display
+a calendar that can be use in a point-and-click fashion.  It pops up in
+a GtkDialog, and when closed, the date is put into the GtkEntry.
