@@ -6,18 +6,8 @@
 #ifndef _CALENDAR_ENTRY_H_
 #define _CALENDAR_ENTRY_H_
 
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <glib-object.h>
-#include <glib/gstrfuncs.h>
-#include <gtk/gtkcalendar.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkdialog.h>
 
 G_BEGIN_DECLS
 
@@ -46,7 +36,7 @@ typedef enum
 
 struct _GtkCalendarEntry
 {
-    GtkVBox     calendarbox;
+    GtkBox        calendarbox;
     GtkWidget   * date_entry[3];
     GtkLabel    * dash[2];
     GtkButton   * use_cal_btn;
@@ -66,22 +56,22 @@ struct _GtkCalendarEntry
 
 struct _GtkCalendarEntryClass
 {
-    GtkVBoxClass parent_class;
+    GtkBoxClass parent_class;
 /*    void (* gtk_calendar_entry) (GtkCalendarEntry *gce);*/
 };
 
-GType   gtk_calendar_entry_get_type  (void);
-void    cal_fast (GtkWidget *, GtkCalendarEntry *);
-GtkBox * mainbox (void);
-void     setentries_from_date (gchar **);
-void    gtk_calendar_entry_set_date_order (GtkCalendarEntry *, guint);
-void    gtk_calendar_entry_set_divider (GtkCalendarEntry *, gchar);
-gchar * gtk_calendar_entry_get_text (GtkCalendarEntry *);
+GType      gtk_calendar_entry_get_type  (void);
+void       cal_fast (GtkWidget *, GtkCalendarEntry *);
+GtkBox   * mainbox (void);
+void       setentries_from_date (gchar **);
+void       gtk_calendar_entry_set_date_order (GtkCalendarEntry *, guint);
+void       gtk_calendar_entry_set_divider (GtkCalendarEntry *, gchar);
+gchar    * gtk_calendar_entry_get_text (GtkCalendarEntry *);
 /*void     on_date_entry_changed (GtkWidget *, gpointer);*/
 GtkWidget *gtk_calendar_entry_new (gchar *date);
 void       run (void);
-void    gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self, gchar *date);
-void    gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *, guint *);
+void       gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self, gchar *date);
+void       gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *, guint *);
 gchar     *get_date (void);
 
 G_END_DECLS

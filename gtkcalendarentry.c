@@ -5,8 +5,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkstock.h>
 #include <glib/gprintf.h>
 #include "gtkcalendarentry.h"
 #include <time.h>
@@ -46,7 +44,7 @@ gtk_calendar_entry_get_type (void)
             (GInstanceInitFunc) gtk_calendar_entry_init,
         };
 
-        gce_type = g_type_register_static (GTK_TYPE_VBOX, "GtkCalendarEntry",
+        gce_type = g_type_register_static (GTK_TYPE_BOX, "GtkCalendarEntry",
                 &gce_info, 0);
     }
 
@@ -70,14 +68,15 @@ build_entry (GtkBox *box, guint size, /*gchar *name,*/ gchar *lbl, GtkCalendarEn
     GtkWidget *entry;
     GtkBox    *fld_vbx;
 
-    fld_vbx = GTK_BOX(gtk_vbox_new (FALSE, 3));
-    entry = gtk_entry_new_with_max_length (size);
+    fld_vbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_VERTICAL, 3));
+    entry = gtk_entry_new ();
+    gtk_entry_set_max_length (GTK_ENTRY(entry), size);
     gtk_entry_set_has_frame (GTK_ENTRY(entry), FALSE);
     gtk_entry_set_width_chars (GTK_ENTRY(entry), size);
     /*gtk_widget_set_name (entry, name);*/
-    gtk_box_pack_start_defaults (fld_vbx, entry);
-    gtk_box_pack_start_defaults (fld_vbx, gtk_label_new (lbl));
-    gtk_box_pack_start_defaults (box, GTK_WIDGET(fld_vbx));
+    gtk_box_pack_start (fld_vbx, entry, FALSE, FALSE, 5);
+    gtk_box_pack_start (fld_vbx, gtk_label_new (lbl), FALSE, FALSE, 5);
+    gtk_box_pack_start (box, GTK_WIDGET(fld_vbx), FALSE, FALSE, 5);
 
     return entry;
 }
@@ -192,16 +191,14 @@ run_cal (GtkWidget *btn, GtkCalendarEntry *self)
     {
         GtkWidget * fast_hbx,
                   * tmpwidget;
-        GtkHBox   * tmp_hbx;
+        GtkBox    * tmp_hbx;
 
         self->dlg = gtk_dialog_new_with_buttons ("Ex-Calendar",
                                         NULL,   /* parent, don't do for now */
                                         GTK_DIALOG_MODAL |
                                             GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        GTK_STOCK_CANCEL,
-                                        GTK_RESPONSE_CANCEL,
-                                        GTK_STOCK_OK,
-                                        GTK_RESPONSE_OK,
+                                        "Cancel", GTK_RESPONSE_CANCEL,
+                                        "Ok", GTK_RESPONSE_OK,
                                         NULL);
         g_signal_connect (self->dlg, "delete-event",
                           G_CALLBACK(dlg_delete_event),
@@ -209,36 +206,36 @@ run_cal (GtkWidget *btn, GtkCalendarEntry *self)
         g_signal_connect (self->dlg, "response",
                           G_CALLBACK(dlg_response), NULL);
 
-        gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(self->dlg)->vbox), 5);
+        //gtk_box_set_spacing (gtk_dialog_get_content_area (self->dlg, 5));
 
         /* Now the calendar */
 
         self->calendar = GTK_CALENDAR(gtk_calendar_new ());
-        gtk_box_pack_start_defaults (GTK_BOX(GTK_DIALOG(self->dlg)->vbox),
-                GTK_WIDGET(self->calendar));
+        gtk_box_pack_start (GTK_BOX(gtk_dialog_get_content_area(
+                        GTK_DIALOG(self->dlg))),
+                GTK_WIDGET(self->calendar), FALSE, FALSE, 5);
         gtk_widget_show GTK_WIDGET(self->calendar);
 
         /* Set date in calendar here */
 
         /* Fast-move buttons */
 
-        fast_hbx = gtk_hbox_new (FALSE, 5);
+        fast_hbx = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
 
         tmpwidget = gtk_button_new_with_label ("- 5 Yr");
         gtk_button_set_image (GTK_BUTTON(tmpwidget),
-                            gtk_image_new_from_stock (GTK_STOCK_MEDIA_REWIND,
+                            gtk_image_new_from_icon_name ("media-rewind",
                                                       GTK_ICON_SIZE_BUTTON));
         gtk_widget_set_name (tmpwidget, "back5yr");
         g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
-        gtk_box_pack_start_defaults (GTK_BOX(fast_hbx), tmpwidget);
+        gtk_box_pack_start (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
 
         tmpwidget = gtk_button_new_with_label ("- 6 Mo");
         gtk_button_set_image (GTK_BUTTON(tmpwidget),
-                            gtk_image_new_from_stock (GTK_STOCK_GO_BACK,
-                                                      GTK_ICON_SIZE_BUTTON));
+                gtk_image_new_from_icon_name("go-back", GTK_ICON_SIZE_BUTTON));
         gtk_widget_set_name (tmpwidget, "back6mo");
         g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
-        gtk_box_pack_start_defaults (GTK_BOX(fast_hbx), tmpwidget);
+        gtk_box_pack_start (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
 
         /* We manually add the decorations to the next two buttons in order
          * to get the image to come after the label.  We tried creating the
@@ -247,29 +244,29 @@ run_cal (GtkWidget *btn, GtkCalendarEntry *self)
 
         tmpwidget = gtk_button_new ();
         gtk_widget_set_name (tmpwidget, "fwd5yr");
-        tmp_hbx = GTK_HBOX(gtk_hbox_new (FALSE, 10));
-        gtk_box_pack_start_defaults (GTK_BOX(tmp_hbx),
-                                     gtk_label_new ("* 5 Yr"));
-        gtk_box_pack_end_defaults (GTK_BOX(tmp_hbx),
-                    gtk_image_new_from_stock (GTK_STOCK_MEDIA_FORWARD,
-                        GTK_ICON_SIZE_BUTTON));
+        tmp_hbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10));
+        gtk_box_pack_start (GTK_BOX(tmp_hbx), gtk_label_new ("* 5 Yr"),
+                            FALSE, FALSE, 5);
+        gtk_box_pack_end (GTK_BOX(tmp_hbx),
+                            gtk_image_new_from_icon_name ("go-forward",
+                                GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 5);
         gtk_container_add (GTK_CONTAINER(tmpwidget), GTK_WIDGET(tmp_hbx));
         g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
-        gtk_box_pack_end_defaults (GTK_BOX(fast_hbx), tmpwidget);
+        gtk_box_pack_end (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
 
         tmpwidget = gtk_button_new ();
         gtk_widget_set_name (tmpwidget, "fwd6mo");
-        tmp_hbx = GTK_HBOX(gtk_hbox_new (FALSE, 5));
-        gtk_box_pack_start_defaults (GTK_BOX(tmp_hbx),
-                                     gtk_label_new ("* 6 Mo"));
-        gtk_box_pack_end_defaults (GTK_BOX(tmp_hbx),
-                    gtk_image_new_from_stock (GTK_STOCK_GO_FORWARD,
-                        GTK_ICON_SIZE_BUTTON));
+        tmp_hbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5));
+        gtk_box_pack_start (GTK_BOX(tmp_hbx), gtk_label_new ("* 6 Mo"),
+                FALSE, FALSE, 5);
+        gtk_box_pack_end (GTK_BOX(tmp_hbx),
+                    gtk_image_new_from_icon_name("go-forward",
+                        GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 5);
         g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
         gtk_container_add (GTK_CONTAINER(tmpwidget), GTK_WIDGET(tmp_hbx));
-        gtk_box_pack_end_defaults (GTK_BOX(fast_hbx), tmpwidget);
-        gtk_box_pack_start_defaults (GTK_BOX(GTK_DIALOG(self->dlg)->vbox),
-                                     fast_hbx);
+        gtk_box_pack_end (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
+        gtk_box_pack_start (GTK_BOX(gtk_dialog_get_content_area(
+                        GTK_DIALOG(self->dlg))), fast_hbx, FALSE, FALSE, 5);
 
         gtk_widget_show_all (fast_hbx);
 
@@ -313,14 +310,14 @@ static void
 gtk_calendar_entry_init (GtkCalendarEntry *self)
 {
     guint i;
-    GtkHBox   * date_entry_hbx;
+    GtkBox    * date_entry_hbx;
     GtkWidget * tmpwidget;
     gchar *lbl[] = {"Year", "Mo", "Da"};
 
     gtk_container_set_border_width (GTK_CONTAINER(self), 5);
     gtk_box_set_spacing (GTK_BOX(self), 5);
 
-    date_entry_hbx = GTK_HBOX(gtk_hbox_new (FALSE, 5));
+    date_entry_hbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5));
 
     /* Build 3 date entry boxes at top */
 
@@ -333,11 +330,12 @@ gtk_calendar_entry_init (GtkCalendarEntry *self)
         gtk_entry_set_has_frame (GTK_ENTRY(self->date_entry[i]), TRUE);
     }
 
-    gtk_box_pack_start_defaults (GTK_BOX(self), GTK_WIDGET(date_entry_hbx));
+    gtk_box_pack_start (GTK_BOX(self), GTK_WIDGET(date_entry_hbx),
+            FALSE, FALSE, 5);
 
     tmpwidget = gtk_button_new_with_label ("Use Calendar");
     g_signal_connect (tmpwidget, "clicked", G_CALLBACK(run_cal), self);
-    gtk_box_pack_start_defaults (GTK_BOX(self), tmpwidget);
+    gtk_box_pack_start (GTK_BOX(self), tmpwidget, FALSE, FALSE, 5);
     gtk_widget_show_all (GTK_WIDGET(self));
 
     gtk_calendar_entry_set_divider (self, '-');     /* Default field divider */
