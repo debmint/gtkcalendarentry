@@ -13,6 +13,28 @@ static void gtk_calendar_entry_init (GtkCalendarEntry *vbx);
 static void set_calendar_from_entries (GtkCalendarEntry *self);
 static GtkWidget *build_entry (GtkBox *box, guint size, /*gchar *name,*/ gchar *lbl, GtkCalendarEntry *);
 
+struct _GtkCalendarEntry
+{
+    GtkBox        parent_instance;
+    GtkWidget   * date_entry[3];
+    GtkLabel    * dash[2];
+    GtkButton   * use_cal_btn;
+    GtkHBox     * fast_hbox;
+    GtkButton   * back5yr;
+    GtkButton   * back6mo;
+    GtkButton   * fwd5yr;
+    GtkButton   * fwd6mo;
+    GtkWidget   * dlg;
+    GtkCalendar * calendar;
+
+    /* data variables */
+    gint date_array[3];
+    gchar divider;
+    guint date_order;
+};
+
+G_DEFINE_TYPE(GtkCalendarEntry, gtk_calendar_entry, GTK_TYPE_BOX);
+
 /*enum {
     LAST_SIGNAL
 };
@@ -22,33 +44,6 @@ static guint gtk_calendar_entry_signals[LAST_SIGNAL] = { 0 };*/
 static void
 gtk_calendar_entry_class_init (GtkCalendarEntryClass *klass)
 {
-}
-
-GType
-gtk_calendar_entry_get_type (void)
-{
-    static GType gce_type = 0;
-
-    if ( ! gce_type)
-    {
-        static const GTypeInfo gce_info =
-        {
-            sizeof (GtkCalendarEntryClass),
-            NULL,   /* base_init */
-            NULL,   /* base_finalize */
-            (GClassInitFunc) gtk_calendar_entry_class_init,
-            NULL,   /* class_finalize */
-            NULL,   /* class_data */
-            sizeof (GtkCalendarEntry),
-            0,
-            (GInstanceInitFunc) gtk_calendar_entry_init,
-        };
-
-        gce_type = g_type_register_static (GTK_TYPE_BOX, "GtkCalendarEntry",
-                &gce_info, 0);
-    }
-
-    return gce_type;
 }
 
 static void
