@@ -13,6 +13,19 @@ static void gtk_calendar_entry_init (GtkCalendarEntry *vbx);
 static void set_calendar_from_entries (GtkCalendarEntry *self);
 static GtkWidget *build_entry (GtkBox *box, guint size, /*gchar *name,*/ gchar *lbl, GtkCalendarEntry *);
 
+/**
+ * SECTION: gtkcalendarentry
+ * @Title: GtkCalendarEntry
+ * @short_description: Provides a "popup" calendar with a text entry
+ *
+ * GtkCalendarEntry provides a popup-type calendar (actually popped up
+ * in a GtkDialog).  The user has the option of typing in the date in a
+ * text entry box, or by clicking on a button (labelled "Use Calendar")
+ * and seeing a calendar displayed where the date can be clicked in with
+ * a mouse.  The date can be displayed either in YYYY-MM-DD or MM-DD-YYY
+ * format.
+ */
+
 struct _GtkCalendarEntry
 {
     GtkBox        parent_instance;
@@ -101,6 +114,15 @@ dlg_response ( GtkWidget *dialog, gpointer user_data)
  * The returned string is created by this function, and should be freed     *
  * when no longer needed.                                                   *
  * ************************************************************************ */
+/**
+ * gtk_calendar_entry_get_text:
+ *
+ * Returns the date contained in the entry widgets, separated by the chosen
+ * divider (usually either '-' or '/').  The string is created by this
+ * function, and should be freed when no longer needed.
+ *
+ * Returns: (transfer none): The date string.
+ */
 
 gchar *
 gtk_calendar_entry_get_text (GtkCalendarEntry *self)
@@ -416,6 +438,15 @@ gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *self, guint *ary)
         gtk_entry_set_text (GTK_ENTRY(self->date_entry[i]), datestr);
     }
 }
+
+/**
+ * gtk_calendar_entry_new:
+ * @date: (nullable): A #gchar* representing the initial date
+ *
+ * Creates a new #GtkCalendarEntry instance
+ *
+ * Returns: (transfer none): The new #GtkCalendarEntry pointer.
+ */
 
 GtkWidget *
 gtk_calendar_entry_new (gchar *date)

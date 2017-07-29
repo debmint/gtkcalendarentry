@@ -3,9 +3,9 @@
 
 AC_PREREQ(2.59)
 AC_INIT(gtkcalendarentry,0.1)
-AC_CONFIG_SRCDIR([gtkcalendarentry.c])
+AC_CONFIG_SRCDIR([src/gtkcalendarentry.c])
 AC_CONFIG_HEADER([config.h])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wno-portability])
 
 # Checks for programs.
 AC_PROG_CC
@@ -13,6 +13,14 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
+
+#
+# Gobject Introspection
+#
+AC_CONFIG_MACRO_DIR([m4])
+
+GTK_DOC_CHECK([1.0], [--flavour no-tmpl])
+GOBJECT_INTROSPECTION_CHECK([1.40.0])
 
 # Checks for libraries.
 
@@ -26,5 +34,5 @@ AC_STRUCT_TM
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile docs/Makefile docs/reference/Makefile])
 AC_OUTPUT

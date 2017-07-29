@@ -1,13 +1,9 @@
-# ###################################################################### $
-# Makefile for gtkcalendarentry.                                         $
-# $Id::                                                                  $
-# ###################################################################### $
+# #########################################################	#
+# Makefile for GtkCalendarEntry								#
+# #########################################################	#
 
-AM_CFLAGS = -g -Wall `pkg-config --cflags gtk+-3.0 gobject-2.0`
+SRC_SUBDIRS = src
+SUBDIRS = $(SRC_SUBDIRS) docs
 
-#AM_LDFLAGS = -g -Wall -Wl,--rpath -Wl,/us/local/lib `pkg-config --libs gtk+-2.0 glib-2.0`
-AM_LDFLAGS = -g -Wall `pkg-config --libs gtk+-3.0 gmodule-2.0`
-
-lib_LTLIBRARIES	= libgtkcalendarentry.la
-libgtkcalendarentry_la_SOURCES = gtkcalendarentry.c
-include_HEADERS = gtkcalendarentry.h
+ACLOCAL_AMFLAGS = -I m4
+AM_DISTCHECK_CONFIGURE_FLAGS = --enable-introspection

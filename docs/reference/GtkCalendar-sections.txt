@@ -1,0 +1,15 @@
+<SECTION>
+<FILE>gtkcalendarentry</FILE>
+<TITLE>GtkCalendarEntry</TITLE>
+GTK_TYPE_CALENDAR_ENTRY
+GtkCalendarEntryDisplayOrder
+GtkCalendarEntryClass
+gtk_calendar_entry_set_date_order
+gtk_calendar_entry_set_divider
+gtk_calendar_entry_get_text
+gtk_calendar_entry_new
+gtk_calendar_entry_set_text_from_string
+gtk_calendar_entry_set_text_from_array
+GtkCalendarEntry
+</SECTION>
+
