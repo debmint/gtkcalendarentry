@@ -35,11 +35,13 @@ void       gtk_calendar_entry_set_date_order (GtkCalendarEntry *self,
 void       gtk_calendar_entry_set_divider (GtkCalendarEntry *self, gchar div);
 gchar    * gtk_calendar_entry_get_text (GtkCalendarEntry *self);
 /*void     on_date_entry_changed (GtkWidget *, gpointer);*/
-GtkWidget *gtk_calendar_entry_new (gchar *date);
+GtkWidget *gtk_calendar_entry_new ();
 //void       run (void);
 void       gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self, gchar *date);
 void       gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *self,
                                                              guint *ary);
+void gtk_calendar_entry_set_transient (GtkCalendarEntry *self,
+                                       GtkWindow *parent);
 //gchar     *get_date (void);
 
 G_END_DECLS

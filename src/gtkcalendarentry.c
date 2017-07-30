@@ -38,6 +38,7 @@ struct _GtkCalendarEntry
     GtkButton   * fwd5yr;
     GtkButton   * fwd6mo;
     GtkWidget   * dlg;
+    GtkWindow   * parent_window;
     GtkCalendar * calendar;
 
     /* data variables */
@@ -102,7 +103,7 @@ dlg_delete_event (GtkWidget *dialog, gpointer user_data)
 }
 
 static gboolean
-dlg_response ( GtkWidget *dialog, gpointer user_data)
+dlg_response (GtkWidget *dialog, gpointer user_data)
 {
     gtk_widget_hide (dialog);
     return FALSE;
@@ -199,102 +200,7 @@ cal_fast (GtkWidget *widg, GtkCalendarEntry * self)
 void
 run_cal (GtkWidget *btn, GtkCalendarEntry *self)
 {
-    gint i,
-         response;
-
-    /* Build dialog with calendar if not already done */
-
-    if ( ! self->dlg)
-    {
-        GtkWidget * fast_hbx,
-                  * tmpwidget;
-        GtkBox    * tmp_hbx;
-
-        self->dlg = gtk_dialog_new_with_buttons ("Ex-Calendar",
-                                        NULL,   /* parent, don't do for now */
-                                        GTK_DIALOG_MODAL |
-                                            GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        "Cancel", GTK_RESPONSE_CANCEL,
-                                        "Ok", GTK_RESPONSE_OK,
-                                        NULL);
-        g_signal_connect (self->dlg, "delete-event",
-                          G_CALLBACK(dlg_delete_event),
-                          NULL);
-        g_signal_connect (self->dlg, "response",
-                          G_CALLBACK(dlg_response), NULL);
-
-        //gtk_box_set_spacing (gtk_dialog_get_content_area (self->dlg, 5));
-
-        /* Now the calendar */
-
-        self->calendar = GTK_CALENDAR(gtk_calendar_new ());
-        gtk_box_pack_start (GTK_BOX(gtk_dialog_get_content_area(
-                        GTK_DIALOG(self->dlg))),
-                GTK_WIDGET(self->calendar), FALSE, FALSE, 5);
-        gtk_widget_show GTK_WIDGET(self->calendar);
-
-        /* Set date in calendar here */
-
-        /* Fast-move buttons */
-
-        fast_hbx = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-
-        tmpwidget = gtk_button_new_with_label ("- 5 Yr");
-        gtk_button_set_image (GTK_BUTTON(tmpwidget),
-                            gtk_image_new_from_icon_name ("media-rewind",
-                                                      GTK_ICON_SIZE_BUTTON));
-        gtk_widget_set_name (tmpwidget, "back5yr");
-        g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
-        gtk_box_pack_start (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
-
-        tmpwidget = gtk_button_new_with_label ("- 6 Mo");
-        gtk_button_set_image (GTK_BUTTON(tmpwidget),
-                gtk_image_new_from_icon_name("go-back", GTK_ICON_SIZE_BUTTON));
-        gtk_widget_set_name (tmpwidget, "back6mo");
-        g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
-        gtk_box_pack_start (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
-
-        /* We manually add the decorations to the next two buttons in order
-         * to get the image to come after the label.  We tried creating the
-         * buttons and then calling reorder_child on the hbox, but it didn't
-         * work */
-
-        tmpwidget = gtk_button_new ();
-        gtk_widget_set_name (tmpwidget, "fwd5yr");
-        tmp_hbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10));
-        gtk_box_pack_start (GTK_BOX(tmp_hbx), gtk_label_new ("* 5 Yr"),
-                            FALSE, FALSE, 5);
-        gtk_box_pack_end (GTK_BOX(tmp_hbx),
-                            gtk_image_new_from_icon_name ("go-forward",
-                                GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 5);
-        gtk_container_add (GTK_CONTAINER(tmpwidget), GTK_WIDGET(tmp_hbx));
-        g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
-        gtk_box_pack_end (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
-
-        tmpwidget = gtk_button_new ();
-        gtk_widget_set_name (tmpwidget, "fwd6mo");
-        tmp_hbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5));
-        gtk_box_pack_start (GTK_BOX(tmp_hbx), gtk_label_new ("* 6 Mo"),
-                FALSE, FALSE, 5);
-        gtk_box_pack_end (GTK_BOX(tmp_hbx),
-                    gtk_image_new_from_icon_name("go-forward",
-                        GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 5);
-        g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
-        gtk_container_add (GTK_CONTAINER(tmpwidget), GTK_WIDGET(tmp_hbx));
-        gtk_box_pack_end (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
-        gtk_box_pack_start (GTK_BOX(gtk_dialog_get_content_area(
-                        GTK_DIALOG(self->dlg))), fast_hbx, FALSE, FALSE, 5);
-
-        gtk_widget_show_all (fast_hbx);
-
-        /* We do the following last to be sure that all is established */
-
-        for (i = 0; i < 3; i++)
-        {
-            g_signal_connect (self->date_entry[i], "changed",
-                            G_CALLBACK(on_date_entry_changed), NULL);
-        }
-    }           /* end <create dialog>    */
+    gint response;
 
     /* set_calendar_from_entries needs to be done on each call,
      * since the entries may have been changed
@@ -309,8 +215,8 @@ run_cal (GtkWidget *btn, GtkCalendarEntry *self)
         guint mydate[3];
 
         gtk_calendar_get_date (self->calendar, &(mydate[0]),
-                                                    &(mydate[1]),
-                                                    &(mydate[2]));
+                                               &(mydate[1]),
+                                               &(mydate[2]));
 
         ++mydate[1];  /* Adjust for calendar's 0-based months */
         gtk_calendar_entry_set_text_from_array (self, mydate);
@@ -330,6 +236,107 @@ gtk_calendar_entry_init (GtkCalendarEntry *self)
     GtkBox    * date_entry_hbx;
     GtkWidget * tmpwidget;
     gchar *lbl[] = {"Year", "Mo", "Da"};
+    char now[20];
+    gchar *set_date;
+    time_t t;
+    GtkWidget * fast_hbx;
+    GtkBox    * tmp_hbx;
+
+    self->dlg = gtk_dialog_new_with_buttons ("Ex-Calendar",
+                                    self->parent_window,   /* parent */
+                                    GTK_DIALOG_MODAL |
+                                        GTK_DIALOG_DESTROY_WITH_PARENT,
+                                    "Cancel", GTK_RESPONSE_CANCEL,
+                                    "Ok", GTK_RESPONSE_OK,
+                                    NULL);
+    g_signal_connect (self->dlg, "delete-event",
+                      G_CALLBACK(dlg_delete_event),
+                      NULL);
+    g_signal_connect (self->dlg, "response",
+                      G_CALLBACK(dlg_response), NULL);
+
+    //gtk_box_set_spacing (gtk_dialog_get_content_area (self->dlg, 5));
+
+    /* Now the calendar */
+
+    self->calendar = GTK_CALENDAR(gtk_calendar_new ());
+    gtk_box_pack_start (GTK_BOX(gtk_dialog_get_content_area(
+                    GTK_DIALOG(self->dlg))),
+            GTK_WIDGET(self->calendar), FALSE, FALSE, 5);
+    gtk_widget_show GTK_WIDGET(self->calendar);
+
+    /* Set date in calendar here */
+
+    /* Fast-move buttons */
+
+    fast_hbx = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+
+    tmpwidget = gtk_button_new_with_label ("- 5 Yr");
+    gtk_button_set_image (GTK_BUTTON(tmpwidget),
+                        gtk_image_new_from_icon_name ("media-rewind",
+                                                  GTK_ICON_SIZE_BUTTON));
+    gtk_widget_set_name (tmpwidget, "back5yr");
+    g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
+    gtk_box_pack_start (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
+
+    tmpwidget = gtk_button_new_with_label ("- 6 Mo");
+    gtk_button_set_image (GTK_BUTTON(tmpwidget),
+            gtk_image_new_from_icon_name("go-back", GTK_ICON_SIZE_BUTTON));
+    gtk_widget_set_name (tmpwidget, "back6mo");
+    g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
+    gtk_box_pack_start (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
+
+    /* We manually add the decorations to the next two buttons in order
+     * to get the image to come after the label.  We tried creating the
+     * buttons and then calling reorder_child on the hbox, but it didn't
+     * work */
+
+    tmpwidget = gtk_button_new ();
+    gtk_widget_set_name (tmpwidget, "fwd5yr");
+    tmp_hbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10));
+    gtk_box_pack_start (GTK_BOX(tmp_hbx), gtk_label_new ("* 5 Yr"),
+                        FALSE, FALSE, 5);
+    gtk_box_pack_end (GTK_BOX(tmp_hbx),
+                        gtk_image_new_from_icon_name ("go-forward",
+                            GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 5);
+    gtk_container_add (GTK_CONTAINER(tmpwidget), GTK_WIDGET(tmp_hbx));
+    g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
+    gtk_box_pack_end (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
+
+    tmpwidget = gtk_button_new ();
+    gtk_widget_set_name (tmpwidget, "fwd6mo");
+    tmp_hbx = GTK_BOX(gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5));
+    gtk_box_pack_start (GTK_BOX(tmp_hbx), gtk_label_new ("* 6 Mo"),
+            FALSE, FALSE, 5);
+    gtk_box_pack_end (GTK_BOX(tmp_hbx),
+                gtk_image_new_from_icon_name("go-forward",
+                    GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 5);
+    g_signal_connect (tmpwidget, "clicked", G_CALLBACK(cal_fast), self);
+    gtk_container_add (GTK_CONTAINER(tmpwidget), GTK_WIDGET(tmp_hbx));
+    gtk_box_pack_end (GTK_BOX(fast_hbx), tmpwidget, FALSE, FALSE, 5);
+    gtk_box_pack_start (GTK_BOX(gtk_dialog_get_content_area(
+                    GTK_DIALOG(self->dlg))), fast_hbx, FALSE, FALSE, 5);
+
+    gtk_widget_show_all (fast_hbx);
+
+    /* We do the following last to be sure that all is established */
+
+//    for (i = 0; i < 3; i++)
+//    {
+//        g_signal_connect (self->date_entry[i], "changed",
+//                        G_CALLBACK(on_date_entry_changed), NULL);
+//    }
+
+    time (&t);
+    struct tm  *ct = localtime (&t);
+
+    g_sprintf (now, "%04d-%02d-%02d", ct->tm_year + 1900,
+                                      ct->tm_mon + 1, ct->tm_mday);
+    set_date = now;
+
+
+    /* We wait until now to do signal_connect on the entries so that
+     * initializing these entries won't trigger them */
 
     gtk_container_set_border_width (GTK_CONTAINER(self), 5);
     gtk_box_set_spacing (GTK_BOX(self), 5);
@@ -347,6 +354,16 @@ gtk_calendar_entry_init (GtkCalendarEntry *self)
         gtk_entry_set_has_frame (GTK_ENTRY(self->date_entry[i]), TRUE);
     }
 
+    gtk_calendar_entry_set_text_from_string (GTK_CALENDAR_ENTRY(self),
+                                             set_date);
+
+    for (i = 0; i < 2; i++)
+    {
+        g_signal_connect (GTK_CALENDAR_ENTRY(self)->date_entry[i], "changed",
+                                               G_CALLBACK(chk_ent_max),
+                                               self);
+    }
+
     gtk_box_pack_start (GTK_BOX(self), GTK_WIDGET(date_entry_hbx),
             FALSE, FALSE, 5);
 
@@ -357,6 +374,24 @@ gtk_calendar_entry_init (GtkCalendarEntry *self)
 
     gtk_calendar_entry_set_divider (self, '-');     /* Default field divider */
     gtk_calendar_entry_set_date_order(self, GTK_CALENDAR_ENTRY_YMD);
+}
+
+/**
+ * gtk_calendar_entry_set_transient:
+ * @self: The GtkCalendarEntry instance
+ * @parent: The window to define as parent
+ *
+ * Sets the parent window for the widget.  This should be done before
+ * calling run.  If this is not set when the calendar dialog is run,
+ * a warning is issued about not declaring a transient parent.
+ */
+
+void
+gtk_calendar_entry_set_transient (GtkCalendarEntry *self, GtkWindow *parent)
+{
+    // Perhaps do a check to see if parent is a valid widget
+    //self->parent_window = GTK_WINDOW(parent);
+    gtk_window_set_transient_for (GTK_WINDOW(self->dlg), parent);
 }
 
 void
@@ -409,9 +444,9 @@ gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self,
 
     src_val = date_ent;
 
-    while (*src_val)
+    for (count=0; count < 3; count++)
     {
-        gtk_entry_set_text (*(date_pos++), *(src_val++));
+        gtk_entry_set_text (date_pos[count], src_val[count]);
 //        g_free (*(date_ent++));
     }
 
@@ -441,7 +476,6 @@ gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *self, guint *ary)
 
 /**
  * gtk_calendar_entry_new:
- * @date: (nullable): A #gchar* representing the initial date
  *
  * Creates a new #GtkCalendarEntry instance
  *
@@ -449,41 +483,9 @@ gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *self, guint *ary)
  */
 
 GtkWidget *
-gtk_calendar_entry_new (gchar *date)
+gtk_calendar_entry_new ()
 {
     GtkWidget * self =  g_object_new (gtk_calendar_entry_get_type (), NULL);
-    char now[20];
-    gchar *set_date;
-    guint i;
-
-    if (date)
-    {
-        set_date = date;
-    }
-    else
-    {
-        time_t t;
-        time (&t);
-        struct tm  *ct = localtime (&t);
-
-        g_sprintf (now, "%04d-%02d-%02d", ct->tm_year + 1900,
-                                          ct->tm_mon + 1, ct->tm_mday);
-        set_date = now;
-    }
-
-
-    gtk_calendar_entry_set_text_from_string (GTK_CALENDAR_ENTRY(self),
-                                             set_date);
-
-    /* We wait until now to do signal_connect on the entries so that
-     * initializing these entries won't trigger them */
-
-    for (i = 0; i < 2; i++)
-    {
-        g_signal_connect (GTK_CALENDAR_ENTRY(self)->date_entry[i], "changed",
-                                               G_CALLBACK(chk_ent_max),
-                                               self);
-    }
 
     return self;
 }
