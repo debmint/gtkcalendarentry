@@ -1,0 +1,6 @@
+# This file is really just a placeholder to cause the m4 directory to
+# be included in the repository
+
+*
+
+!.gitignore
