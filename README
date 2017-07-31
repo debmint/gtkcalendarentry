@@ -25,6 +25,6 @@ Below are additional instructions for initial setup.
 
 Prior to running autoconf (or autoreconf), the command "gtkdocize" should
 be run to install gtk-doc.make.  then run autoconf or autoreconf.  Finally,
-run ./configure.  The option "--with-gtk-doc" must be supplied with this
+run ./configure.  The option "--enable-gtk-doc" must be supplied with this
 command to build the gtk-doc documentation, as it is disabled by default
 
