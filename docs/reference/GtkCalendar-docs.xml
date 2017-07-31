@@ -17,7 +17,7 @@
   </bookinfo>
 
   <chapter>
-    <title>[Insert title here]</title>
+    <title>GtkCalendarEntry</title>
         <xi:include href="xml/gtkcalendarentry.xml"/>
 
   </chapter>

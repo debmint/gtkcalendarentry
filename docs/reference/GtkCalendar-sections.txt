@@ -8,6 +8,7 @@ gtk_calendar_entry_set_date_order
 gtk_calendar_entry_set_divider
 gtk_calendar_entry_get_text
 gtk_calendar_entry_new
+gtk_calendar_entry_set_transient
 gtk_calendar_entry_set_text_from_string
 gtk_calendar_entry_set_text_from_array
 GtkCalendarEntry

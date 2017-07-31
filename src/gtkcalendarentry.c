@@ -26,9 +26,16 @@ static GtkWidget *build_entry (GtkBox *box, guint size, /*gchar *name,*/ gchar *
  * format.
  */
 
+/**
+ * GtkCalendarEntry:
+ * @parent_instance: Parent instance - #GtkBox
+ *
+ */
+
 struct _GtkCalendarEntry
 {
     GtkBox        parent_instance;
+    /*< private >*/
     GtkWidget   * date_entry[3];
     GtkLabel    * dash[2];
     GtkButton   * use_cal_btn;
@@ -117,12 +124,15 @@ dlg_response (GtkWidget *dialog, gpointer user_data)
  * ************************************************************************ */
 /**
  * gtk_calendar_entry_get_text:
+ * @self: The #GtkCalendarEntry instance
  *
  * Returns the date contained in the entry widgets, separated by the chosen
- * divider (usually either '-' or '/').  The string is created by this
- * function, and should be freed when no longer needed.
+ * divider (usually either '-' or '/').
  *
- * Returns: (transfer none): The date string.
+ * The string is created by this function, and should be freed when
+ * no longer needed.
+ *
+ * Returns: The date string.
  */
 
 gchar *
@@ -254,6 +264,7 @@ gtk_calendar_entry_init (GtkCalendarEntry *self)
                       NULL);
     g_signal_connect (self->dlg, "response",
                       G_CALLBACK(dlg_response), NULL);
+    gtk_window_set_decorated (GTK_WINDOW(self->dlg), FALSE);
 
     //gtk_box_set_spacing (gtk_dialog_get_content_area (self->dlg, 5));
 
@@ -394,6 +405,15 @@ gtk_calendar_entry_set_transient (GtkCalendarEntry *self, GtkWindow *parent)
     gtk_window_set_transient_for (GTK_WINDOW(self->dlg), parent);
 }
 
+/**
+ * gtk_calendar_entry_set_date_order:
+ * @self: The #GtkCalendarEntry instance
+ * @d_order: The desired date order
+ *
+ * Sets the format for the displayed date.  Possible choices are YYY-MM-DD
+ * or MM-DD-YYY.
+ */
+
 void
 gtk_calendar_entry_set_date_order (GtkCalendarEntry *self, guint d_order)
 {
@@ -403,6 +423,14 @@ gtk_calendar_entry_set_date_order (GtkCalendarEntry *self, guint d_order)
         self->date_order = d_order;
     }
 }
+
+/**
+ * gtk_calendar_entry_set_divider:
+ * @self: The #GtkCalendarEntry instance
+ * @div: The character to use between date components.
+ *
+ * Sets the Divider to use between the date components (Month, Day, Year)
+ */
 
 void
 gtk_calendar_entry_set_divider (GtkCalendarEntry *self, gchar div)
@@ -422,6 +450,15 @@ set_calendar_from_entries (GtkCalendarEntry *self)
     gtk_calendar_select_day (self->calendar,
                 atoi(gtk_entry_get_text (GTK_ENTRY(self->date_entry[2]))));
 }
+
+/**
+ * gtk_calendar_entry_set_text_from_string:
+ * @self: The #GtkCalendarEntry instance
+ * @date: A date string in the format YYYY-MM-DD
+ *
+ * Sets the date in the text entry boxes from a string
+ *
+ */
 
 void
 gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self,
@@ -453,6 +490,17 @@ gtk_calendar_entry_set_text_from_string (GtkCalendarEntry *self,
     g_strfreev (date_ent);
 }
 
+/**
+ * gtk_calendar_entry_set_text_from_array:
+ * @self: The #GtkCalendarEntry instance
+ * @ary: (array): A 3-element array representing the date
+ *
+ * Sets the date in the text entry boxes.  The date is provided in an array
+ * containing each of the components of a date, with the year as the first
+ * element, the month as the second, and the day as the third.
+ *
+ */
+
 void
 gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *self, guint *ary)
 {
@@ -479,13 +527,15 @@ gtk_calendar_entry_set_text_from_array (GtkCalendarEntry *self, guint *ary)
  *
  * Creates a new #GtkCalendarEntry instance
  *
- * Returns: (transfer none): The new #GtkCalendarEntry pointer.
+ * Returns: The new #GtkCalendarEntry pointer.
  */
 
 GtkWidget *
 gtk_calendar_entry_new ()
 {
-    GtkWidget * self =  g_object_new (gtk_calendar_entry_get_type (), NULL);
+    GtkWidget * self;
+   
+    self = g_object_new (gtk_calendar_entry_get_type (), NULL);
 
     return self;
 }
