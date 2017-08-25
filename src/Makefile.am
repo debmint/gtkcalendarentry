@@ -9,6 +9,7 @@ AM_CFLAGS = -g -Wall `pkg-config --cflags gtk+-3.0`
 AM_LDFLAGS = -g -Wall `pkg-config --libs gtk+-3.0`
 
 CLEANFILES = 
+IR_SCANFLAGS = -I$(srcdir)
 lib_LTLIBRARIES	= libgtkcalendarentry.la
 libgtkcalendarentry_la_SOURCES = gtkcalendarentry.c
 source_h = gtkcalendarentry.h
