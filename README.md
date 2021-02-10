@@ -1,3 +1,6 @@
+Moved to https://gitlab.com/debmint/gtkcalendarentry
+---------
+
 This is a widget to display a calendar as a popup - sort of.  It has a
 GtkEntry in which the date can be entered, but also a button to display
 a calendar that can be use in a point-and-click fashion.  It pops up in
@@ -12,15 +15,15 @@ tested are Perl and Python.
 
 =======================================================================
 
-PREREQUISITES
+### PREREQUISITES
 
 In order to build this project you must have pkg-config, Gtk-3 development
 files, GObject Introspection development files, autotools, and, to build the
 documentation, gtk-doc.
 
-INSTALLATION NOTES
+### INSTALLATION NOTES
 
-Please read the file "INSTALL" for general instructions on setting up.
+Please read the file _INSTALL_ for general instructions on setting up.
 Below are additional instructions for initial setup.
 
 Prior to running autoconf (or autoreconf), the command "gtkdocize" should
